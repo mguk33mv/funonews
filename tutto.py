@@ -13,19 +13,21 @@ chat_id = 31923577
 bot = telegram.Bot(tokenTELEGRAM)
 
 prevTitleFormulaPassion=""
-
+link_arr = []
 def FormulaPassion():
+	global link_arr
 	global tokenREADABILITY
 	global prevTitleFormulaPassion
 	d = feedparser.parse("http://formulapassion.it/feed")
 	title =  d["items"][0]["title"]
 	link = d["items"][0]["link"]
-	if (title != prevTitleFormulaPassion):
-		print title, prevTitleFormulaPassion
+	if (link not in link_arr):
+		#print title, prevTitleFormulaPassion
 		url_read_parser = "https://www.readability.com/api/content/v1/parser?url=" + link + "&token=" + tokenREADABILITY 
 		readability = urllib.urlopen(url_read_parser).read()
 		niceContent = BeautifulSoup(json.loads(readability).get("content"),"lxml").text.split("RIPRODUZIONE VIETATA anche")[0].rstrip()
 		prevTitleFormulaPassion = title
+		link_arr.append(link)
 		articolo = "<b>" + title +  "</b>" + "\n" + link + "\n" + niceContent
 		print articolo
 		return articolo
